@@ -37,13 +37,17 @@ def download_files():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     if not os.path.exists(MODEL_PATH):
-        st.info("Téléchargement du modèle depuis Google Drive...")
+        st.info("📥 Téléchargement du modèle depuis Google Drive...")
+        # On télécharge bien en .tar
         gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "model.tar", quiet=False)
-        os.system(f"tar -xzf model.tar.gz -C {MODEL_DIR}")
+        
+        # Extraire le fichier tar
+        os.system(f"tar -xf model.tar -C {MODEL_DIR}")
 
     if not os.path.exists(ENCODER_PATH):
-        st.info("Téléchargement de l'encodeur...")
+        st.info("📥 Téléchargement de l'encodeur...")
         gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
+
 
 download_files()
 
