@@ -65,18 +65,15 @@ download_files()
 # -------------------------------
 # 🔄 Charger le modèle CamemBERT
 # -------------------------------
-@st.cache_resource
-def load_model():
-    tokenizer = CamembertTokenizer.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
-    model = CamembertForSequenceClassification.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
-    label_encoder = joblib.load(ENCODER_PATH)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+tokenizer = CamembertTokenizer.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
+model = CamembertForSequenceClassification.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
+label_encoder = joblib.load(ENCODER_PATH)
 
-    return tokenizer, model, label_encoder, device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
-tokenizer, model, label_encoder, device = load_model()
+   
 
 # -------------------------------
 # 🔹 Fonction de prédiction
