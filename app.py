@@ -98,7 +98,11 @@ st.text(get_arborescence(MODEL_SUBDIR))
 # -------------------------------
 # 🔄 Chargement du modèle
 # -------------------------------
-tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
+try:
+    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
+    print("✅ Tokenizer chargé avec succès.")
+except Exception as e:
+    print("❌ Erreur lors du chargement du tokenizer :", e)
 model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 
