@@ -66,8 +66,8 @@ download_files()
 # 🔄 Charger le modèle CamemBERT
 # -------------------------------
 
-tokenizer = CamembertTokenizer.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
-model = CamembertForSequenceClassification.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
+tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
+model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
