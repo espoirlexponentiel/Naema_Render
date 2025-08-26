@@ -79,6 +79,21 @@ def download_files():
         st.success("✅ Encodeur téléchargé.")
 
 download_files()
+def get_arborescence(dossier, indent=0):
+    arbo = ""
+    try:
+        for item in os.listdir(dossier):
+            chemin = os.path.join(dossier, item)
+            arbo += "  " * indent + "├─ " + item + "\n"
+            if os.path.isdir(chemin):
+                arbo += get_arborescence(chemin, indent + 1)
+    except Exception as e:
+        arbo += f"Erreur : {e}\n"
+    return arbo
+
+# Affichage dans Streamlit
+st.subheader("📁 Arborescence du dossier modèle")
+st.text(get_arborescence(MODEL_SUBDIR))
 
 # -------------------------------
 # 🔄 Chargement du modèle
