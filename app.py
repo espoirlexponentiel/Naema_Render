@@ -28,7 +28,7 @@ if not st.session_state.authenticated:
 # -------------------------------
 # 📂 Paramètres de téléchargement
 # -------------------------------
-MODEL_DIR = "model_naema"
+MODEL_DIR = "C:\model_naema"
 MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
