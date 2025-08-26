@@ -1,11 +1,12 @@
 streamlit
 torch
 transformers
+sentencepiece
+protobuf
 joblib
 gdown
 pandas
 openpyxl
-sentencepiece
-protobuf
+scikit-learn
 
 

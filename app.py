@@ -4,13 +4,16 @@ import os
 import gdown
 import torch
 import pandas as pd
+import tarfile
+import tempfile
+import shutil
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
 from io import BytesIO
 
 # -------------------------------
 # 🔐 Sécurité : mot de passe
 # -------------------------------
-PASSWORD = os.environ.get("PASSWORD", "naema2025")  # à définir dans Render
+PASSWORD = os.environ.get("PASSWORD", "naema2025")
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -23,57 +26,69 @@ if not st.session_state.authenticated:
         st.stop()
 
 # -------------------------------
-# 📂 Téléchargement du modèle
+# 📂 Paramètres de téléchargement
 # -------------------------------
 MODEL_DIR = "model_naema"
-MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")  # Dossier contenant les fichiers du modèle
+MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"
 ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
+
+# -------------------------------
+# 📥 Téléchargement des fichiers
+# -------------------------------
+def download_tar_from_drive(file_id, output_path="results.tar"):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, output_path, quiet=False)
+    return output_path
+
+def extract_tar_to_temp(tar_path):
+    temp_dir = tempfile.mkdtemp()
+    with tarfile.open(tar_path, "r") as tar:
+        tar.extractall(path=temp_dir)
+    return temp_dir
+
+def copy_to_local_folder(src_dir, dest_dir):
+    os.makedirs(dest_dir, exist_ok=True)
+    for root, _, files in os.walk(src_dir):
+        for file in files:
+            src_path = os.path.join(root, file)
+            rel_path = os.path.relpath(src_path, src_dir)
+            dest_path = os.path.join(dest_dir, rel_path)
+            os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+            shutil.copy2(src_path, dest_path)
+
+def download_file_direct(file_id, dest_path):
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, dest_path, quiet=False)
 
 def download_files():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     if not os.path.exists(MODEL_SUBDIR):
         st.info("📥 Téléchargement du modèle depuis Google Drive...")
-        gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "results.tar", quiet=False)
-
-        # Extraction à la racine
-        os.system("tar -xf results.tar")
-
-        # Déplacement des fichiers extraits vers MODEL_SUBDIR
-        if os.path.exists("results"):
-            os.makedirs(MODEL_SUBDIR, exist_ok=True)
-            os.system(f"mv results/* {MODEL_SUBDIR}")
-            os.system("rm -r results")  # Nettoyage
-        else:
-            st.error("❌ Le dossier 'results' est introuvable après extraction.")
+        tar_path = download_tar_from_drive(MODEL_DRIVE_ID)
+        extracted_dir = extract_tar_to_temp(tar_path)
+        copy_to_local_folder(extracted_dir, MODEL_SUBDIR)
+        st.success("✅ Modèle extrait et copié dans le dossier local.")
 
     if not os.path.exists(ENCODER_PATH):
         st.info("📥 Téléchargement de l'encodeur...")
-        gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
-
-    # Vérification des fichiers critiques
-    # required_files = ["config.json", "pytorch_model.bin", "tokenizer_config.json"]
-    # missing = [f for f in required_files if not os.path.exists(os.path.join(MODEL_SUBDIR, f))]
-    # if missing:
-    #     st.warning(f"⚠️ Fichiers manquants dans le modèle : {', '.join(missing)}")
+        download_file_direct(ENCODER_DRIVE_ID, ENCODER_PATH)
+        st.success("✅ Encodeur téléchargé.")
 
 download_files()
 
 # -------------------------------
-# 🔄 Charger le modèle CamemBERT
+# 🔄 Chargement du modèle
 # -------------------------------
-
 tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
 model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
-
-   
 
 # -------------------------------
 # 🔹 Fonction de prédiction
