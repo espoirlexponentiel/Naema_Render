@@ -26,28 +26,31 @@ if not st.session_state.authenticated:
 # 📂 Téléchargement du modèle
 # -------------------------------
 MODEL_DIR = "model_naema"
-MODEL_PATH = os.path.join(MODEL_DIR, "results/")
+MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")  # Dossier final contenant les fichiers du modèle
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
-# ⚠️ Remplace par tes vrais IDs Google Drive
-MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"      # ex: results compressé en .tar.gz ou .zip
-ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"   # ex: label_encoder.pkl
+MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"
+ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
 
 def download_files():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
-    if not os.path.exists(MODEL_PATH):
+    if not os.path.exists(MODEL_SUBDIR):
         st.info("📥 Téléchargement du modèle depuis Google Drive...")
-        # On télécharge bien en .tar
         gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "model.tar", quiet=False)
-        
-        # Extraire le fichier tar
-        os.system(f"tar -xf model.tar -C {MODEL_DIR}")
+
+        # Extraction à la racine
+        os.system("tar -xf model.tar")
+
+        # Déplacement des fichiers extraits vers MODEL_SUBDIR
+        if os.path.exists("results"):
+            os.makedirs(MODEL_SUBDIR, exist_ok=True)
+            os.system(f"mv results/* {MODEL_SUBDIR}")
+            os.system("rm -r results")  # Nettoyage
 
     if not os.path.exists(ENCODER_PATH):
         st.info("📥 Téléchargement de l'encodeur...")
         gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
-
 
 download_files()
 
@@ -56,13 +59,13 @@ download_files()
 # -------------------------------
 @st.cache_resource
 def load_model():
-    tokenizer = CamembertTokenizer.from_pretrained(MODEL_PATH)
-    model = CamembertForSequenceClassification.from_pretrained(MODEL_PATH)
+    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
+    model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
     label_encoder = joblib.load(ENCODER_PATH)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.to(device)
-    model.eval()
+
     return tokenizer, model, label_encoder, device
 
 tokenizer, model, label_encoder, device = load_model()
@@ -114,7 +117,6 @@ if uploaded_file:
         st.write("Aperçu du fichier :")
         st.dataframe(df.head())
 
-        # Vérifier qu'il y a une colonne 'Activité'
         if 'Activité' not in df.columns:
             st.error("Le fichier doit contenir une colonne nommée 'Activité'.")
         else:
@@ -123,7 +125,6 @@ if uploaded_file:
                 st.success("✅ Prédiction terminée !")
                 st.dataframe(df.head())
 
-                # Préparer le téléchargement
                 output = BytesIO()
                 df.to_excel(output, index=False)
                 output.seek(0)
