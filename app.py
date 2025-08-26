@@ -54,6 +54,9 @@ def download_files():
 
 download_files()
 
+st.write("📁 Fichiers dans MODEL_SUBDIR :", os.listdir(MODEL_SUBDIR))
+
+
 # -------------------------------
 # 🔄 Charger le modèle CamemBERT
 # -------------------------------
