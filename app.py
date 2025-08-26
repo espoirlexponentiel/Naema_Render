@@ -1,7 +1,6 @@
 import streamlit as st
 import joblib
 import os
-import gdown
 import torch
 import pandas as pd
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
@@ -23,45 +22,24 @@ if not st.session_state.authenticated:
         st.stop()
 
 # -------------------------------
-# 📂 Téléchargement du modèle
+# 📂 Chemins vers les fichiers sur Google Drive
 # -------------------------------
-MODEL_DIR = "model_naema"
-MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")  # Dossier final contenant les fichiers du modèle
-ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
-
-MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"
-ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
-
-def download_files():
-    os.makedirs(MODEL_DIR, exist_ok=True)
-
-    if not os.path.exists(MODEL_SUBDIR):
-        st.info("📥 Téléchargement du modèle depuis Google Drive...")
-        gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "model.tar", quiet=False)
-
-        # Extraction à la racine
-        os.system("tar -xf model.tar")
-
-        # Déplacement des fichiers extraits vers MODEL_SUBDIR
-        if os.path.exists("results"):
-            os.makedirs(MODEL_SUBDIR, exist_ok=True)
-            os.system(f"mv results/* {MODEL_SUBDIR}")
-            os.system("rm -r results")  # Nettoyage
-
-    if not os.path.exists(ENCODER_PATH):
-        st.info("📥 Téléchargement de l'encodeur...")
-        gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
-
-download_files()
-
-st.write("📁 Fichiers dans MODEL_SUBDIR :", os.listdir(MODEL_SUBDIR))
-
+MODEL_SUBDIR = "/content/drive/MyDrive/Modeles_NAEMA3/results"
+ENCODER_PATH = "/content/drive/MyDrive/Modeles_NAEMA3/label_encoder.pkl"
 
 # -------------------------------
-# 🔄 Charger le modèle CamemBERT
+# 🔄 Chargement du modèle CamemBERT
 # -------------------------------
 @st.cache_resource
 def load_model():
+    if not os.path.exists(MODEL_SUBDIR):
+        st.error("❌ Dossier du modèle introuvable.")
+        st.stop()
+
+    if not os.path.exists(ENCODER_PATH):
+        st.error("❌ Fichier encodeur introuvable.")
+        st.stop()
+
     tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
     model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
     label_encoder = joblib.load(ENCODER_PATH)
