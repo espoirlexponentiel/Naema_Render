@@ -26,12 +26,12 @@ if not st.session_state.authenticated:
 # 📂 Téléchargement du modèle
 # -------------------------------
 MODEL_DIR = "model_naema"
-MODEL_PATH = os.path.join(MODEL_DIR, "results/model.pkl")
+MODEL_PATH = os.path.join(MODEL_DIR, "results/")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 # ⚠️ Remplace par tes vrais IDs Google Drive
-MODEL_DRIVE_ID = "https://drive.google.com/drive/folders/1qsWhhkeYCGyx-fGMUV_Ew7pGRW0Om3J9?usp=drive_link"      # ex: results compressé en .tar.gz ou .zip
-ENCODER_DRIVE_ID = "https://drive.google.com/file/d/1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq/view?usp=drive_link"   # ex: label_encoder.pkl
+MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"      # ex: results compressé en .tar.gz ou .zip
+ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"   # ex: label_encoder.pkl
 
 def download_files():
     os.makedirs(MODEL_DIR, exist_ok=True)
