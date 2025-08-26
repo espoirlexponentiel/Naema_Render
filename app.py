@@ -37,10 +37,10 @@ def download_files():
 
     if not os.path.exists(MODEL_SUBDIR):
         st.info("📥 Téléchargement du modèle depuis Google Drive...")
-        gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "model.tar", quiet=False)
+        gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "results.tar", quiet=False)
 
         # Extraction à la racine
-        os.system("tar -xf model.tar")
+        os.system("tar -xf results.tar")
 
         # Déplacement des fichiers extraits vers MODEL_SUBDIR
         if os.path.exists("results"):
@@ -55,10 +55,10 @@ def download_files():
         gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
 
     # Vérification des fichiers critiques
-    required_files = ["config.json", "pytorch_model.bin", "tokenizer_config.json"]
-    missing = [f for f in required_files if not os.path.exists(os.path.join(MODEL_SUBDIR, f))]
-    if missing:
-        st.warning(f"⚠️ Fichiers manquants dans le modèle : {', '.join(missing)}")
+    # required_files = ["config.json", "pytorch_model.bin", "tokenizer_config.json"]
+    # missing = [f for f in required_files if not os.path.exists(os.path.join(MODEL_SUBDIR, f))]
+    # if missing:
+    #     st.warning(f"⚠️ Fichiers manquants dans le modèle : {', '.join(missing)}")
 
 download_files()
 
@@ -67,8 +67,8 @@ download_files()
 # -------------------------------
 @st.cache_resource
 def load_model():
-    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
-    model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
+    tokenizer = CamembertTokenizer.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
+    model = CamembertForSequenceClassification.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
     label_encoder = joblib.load(ENCODER_PATH)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
