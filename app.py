@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import os
+import gdown
 import torch
 import pandas as pd
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
@@ -22,24 +23,50 @@ if not st.session_state.authenticated:
         st.stop()
 
 # -------------------------------
-# 📂 Chemins vers les fichiers sur Google Drive
+# 📂 Téléchargement du modèle
 # -------------------------------
-MODEL_SUBDIR = "/content/drive/MyDrive/Modeles_NAEMA3/results"
-ENCODER_PATH = "/content/drive/MyDrive/Modeles_NAEMA3/label_encoder.pkl"
+MODEL_DIR = "model_naema"
+MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")  # Dossier contenant les fichiers du modèle
+ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
+
+MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"
+ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
+
+def download_files():
+    os.makedirs(MODEL_DIR, exist_ok=True)
+
+    if not os.path.exists(MODEL_SUBDIR):
+        st.info("📥 Téléchargement du modèle depuis Google Drive...")
+        gdown.download(f"https://drive.google.com/uc?id={MODEL_DRIVE_ID}", "model.tar", quiet=False)
+
+        # Extraction à la racine
+        os.system("tar -xf model.tar")
+
+        # Déplacement des fichiers extraits vers MODEL_SUBDIR
+        if os.path.exists("results"):
+            os.makedirs(MODEL_SUBDIR, exist_ok=True)
+            os.system(f"mv results/* {MODEL_SUBDIR}")
+            os.system("rm -r results")  # Nettoyage
+        else:
+            st.error("❌ Le dossier 'results' est introuvable après extraction.")
+
+    if not os.path.exists(ENCODER_PATH):
+        st.info("📥 Téléchargement de l'encodeur...")
+        gdown.download(f"https://drive.google.com/uc?id={ENCODER_DRIVE_ID}", ENCODER_PATH, quiet=False)
+
+    # Vérification des fichiers critiques
+    required_files = ["config.json", "pytorch_model.bin", "tokenizer_config.json"]
+    missing = [f for f in required_files if not os.path.exists(os.path.join(MODEL_SUBDIR, f))]
+    if missing:
+        st.warning(f"⚠️ Fichiers manquants dans le modèle : {', '.join(missing)}")
+
+download_files()
 
 # -------------------------------
-# 🔄 Chargement du modèle CamemBERT
+# 🔄 Charger le modèle CamemBERT
 # -------------------------------
 @st.cache_resource
 def load_model():
-    if not os.path.exists(MODEL_SUBDIR):
-        st.error("❌ Dossier du modèle introuvable.")
-        st.stop()
-
-    if not os.path.exists(ENCODER_PATH):
-        st.error("❌ Fichier encodeur introuvable.")
-        st.stop()
-
     tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
     model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
     label_encoder = joblib.load(ENCODER_PATH)
