@@ -111,10 +111,7 @@ try:
     print("✅ Tokenizer chargé avec succès.")
 except Exception as e:
     print("❌ Erreur lors du chargement du tokenizer :", e)
-model = CamembertForSequenceClassification.from_pretrained(
-    MODEL_SUBDIR,
-    device_map="cpu" 
-                                                           )
+model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
@@ -130,9 +127,9 @@ def predict_class(intitule):
         padding=True,
         truncation=True,
         return_tensors="pt"
-    )
+    ).to("cpu")
 
-    inputs = {k: v.to("cpu") for k, v in inputs.items()} 
+    
 
     with torch.no_grad():
         outputs = model(**inputs)
