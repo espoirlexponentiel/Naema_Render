@@ -115,7 +115,7 @@ model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 model.to(device)
 
 # -------------------------------
