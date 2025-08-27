@@ -31,7 +31,7 @@ from io import BytesIO
 # 📂 Paramètres de téléchargement
 # -------------------------------
 MODEL_DIR = "C:\model_naema"
-MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
+MODEL_SUBDIR = os.path.join(MODEL_DIR, "results/results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 MODEL_DRIVE_ID = "1vpRfWVAzgsyAlIWyobWAGVylNWG__qpF"
@@ -107,11 +107,11 @@ st.text(get_arborescence(MODEL_SUBDIR))
 
 
 try:
-    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR/results)
+    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
     print("✅ Tokenizer chargé avec succès.")
 except Exception as e:
     print("❌ Erreur lors du chargement du tokenizer :", e)
-model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR/results)
+model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
