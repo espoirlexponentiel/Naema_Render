@@ -31,7 +31,7 @@ from io import BytesIO
 # 📂 Paramètres de téléchargement
 # -------------------------------
 MODEL_DIR = "C:\model_naema"
-MODEL_SUBDIR = os.path.join(MODEL_DIR, "results/results")
+MODEL_SUBDIR = os.path.join(MODEL_DIR, "results/results/results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
 MODEL_DRIVE_ID = "1vpRfWVAzgsyAlIWyobWAGVylNWG__qpF"
