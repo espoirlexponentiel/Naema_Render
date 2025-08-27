@@ -111,7 +111,11 @@ try:
     print("✅ Tokenizer chargé avec succès.")
 except Exception as e:
     print("❌ Erreur lors du chargement du tokenizer :", e)
-model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
+model = CamembertForSequenceClassification.from_pretrained(
+    MODEL_SUBDIR,
+    device_map=None  # force le chargement complet en mémoire
+)
+
 label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
