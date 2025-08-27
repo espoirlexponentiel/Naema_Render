@@ -115,8 +115,8 @@ model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
 label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
-device = torch.device("cpu")
-model.to(device)
+# device = torch.device("cpu")
+# model.to(device)
 
 # -------------------------------
 # 🔹 Fonction de prédiction
@@ -127,7 +127,7 @@ def predict_class(intitule):
         padding=True,
         truncation=True,
         return_tensors="pt"
-    ).to(device)
+    )
 
     with torch.no_grad():
         outputs = model(**inputs)
