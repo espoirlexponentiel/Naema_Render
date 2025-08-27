@@ -91,6 +91,13 @@ def get_arborescence(dossier, indent=0):
         arbo += f"Erreur : {e}\n"
     return arbo
 
+
+src = os.path.join(MODEL_SUBDIR, "model.safetensors")
+dst = os.path.join(MODEL_SUBDIR, "pytorch_model.bin")
+if os.path.exists(src):
+    os.rename(src, dst)
+
+
 # Affichage dans Streamlit
 st.subheader("📁 Arborescence du dossier modèle")
 st.text(get_arborescence(MODEL_SUBDIR))
