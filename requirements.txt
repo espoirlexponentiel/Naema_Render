@@ -2,6 +2,7 @@ streamlit
 torch
 transformers==4.55.2
 sentencepiece
+safetensors
 protobuf
 joblib
 gdown
