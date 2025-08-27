@@ -104,13 +104,16 @@ st.text(get_arborescence(MODEL_SUBDIR))
 # -------------------------------
 # 🔄 Chargement du modèle
 # -------------------------------
+
+
 try:
-    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR)
+    tokenizer = CamembertTokenizer.from_pretrained(MODEL_SUBDIR/results)
     print("✅ Tokenizer chargé avec succès.")
 except Exception as e:
     print("❌ Erreur lors du chargement du tokenizer :", e)
-model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR)
+model = CamembertForSequenceClassification.from_pretrained(MODEL_SUBDIR/results)
 label_encoder = joblib.load(ENCODER_PATH)
+print("✅ encoder chargé avec succès.")
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
