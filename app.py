@@ -32,7 +32,7 @@ MODEL_DIR = "C:\model_naema"
 MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
-MODEL_DRIVE_ID = "1xj6wLXPKO82NEO9URIkLbEliShfRvMCF"
+MODEL_DRIVE_ID = "1-TPFKeWq0eO2c8hp106NQ6BP0ELxEt5d"
 ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
 
 # -------------------------------
@@ -92,10 +92,7 @@ def get_arborescence(dossier, indent=0):
     return arbo
 
 
-src = os.path.join(MODEL_SUBDIR, "model.safetensors")
-dst = os.path.join(MODEL_SUBDIR, "pytorch_model.bin")
-if os.path.exists(src):
-    os.rename(src, dst)
+
 
 
 # Affichage dans Streamlit
