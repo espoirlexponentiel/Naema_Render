@@ -32,7 +32,7 @@ MODEL_DIR = "C:\model_naema"
 MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
-MODEL_DRIVE_ID = "1fp-ChRMyJTgzEPgTgBWEGm1lhbEhO1Qw"
+MODEL_DRIVE_ID = "1xj6wLXPKO82NEO9URIkLbEliShfRvMCF"
 ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
 
 # -------------------------------
