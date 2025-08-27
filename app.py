@@ -10,6 +10,8 @@ import shutil
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
 from io import BytesIO
 
+st.text(f"Transformers version : {transformers.__version__}")
+
 # -------------------------------
 # 🔐 Sécurité : mot de passe
 # -------------------------------
@@ -32,7 +34,7 @@ MODEL_DIR = "C:\model_naema"
 MODEL_SUBDIR = os.path.join(MODEL_DIR, "results")
 ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.pkl")
 
-MODEL_DRIVE_ID = "1-TPFKeWq0eO2c8hp106NQ6BP0ELxEt5d"
+MODEL_DRIVE_ID = "1xOE-xcsdI3b6ykpjELvYq5SK_RKj-CYV"
 ENCODER_DRIVE_ID = "1bSAgS4-RsaFekdU4Qc9wrdw-pXugdbbq"
 
 # -------------------------------
