@@ -10,22 +10,22 @@ import shutil
 from transformers import CamembertTokenizer, CamembertForSequenceClassification
 from io import BytesIO
 
-st.text(f"Transformers version : {transformers.__version__}")
+# st.text(f"Transformers version : {transformers.__version__}")
 
-# -------------------------------
-# 🔐 Sécurité : mot de passe
-# -------------------------------
-PASSWORD = os.environ.get("PASSWORD", "naema2025")
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
+# # -------------------------------
+# # 🔐 Sécurité : mot de passe
+# # -------------------------------
+# PASSWORD = os.environ.get("PASSWORD", "naema2025")
+# if "authenticated" not in st.session_state:
+#     st.session_state.authenticated = False
 
-if not st.session_state.authenticated:
-    pwd = st.text_input("Mot de passe :", type="password")
-    if pwd == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("✅ Authentification réussie !")
-    else:
-        st.stop()
+# if not st.session_state.authenticated:
+#     pwd = st.text_input("Mot de passe :", type="password")
+#     if pwd == PASSWORD:
+#         st.session_state.authenticated = True
+#         st.success("✅ Authentification réussie !")
+#     else:
+#         st.stop()
 
 # -------------------------------
 # 📂 Paramètres de téléchargement
