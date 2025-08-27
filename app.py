@@ -116,7 +116,7 @@ label_encoder = joblib.load(ENCODER_PATH)
 print("✅ encoder chargé avec succès.")
 
 device = torch.device("cpu")
-model.to("device")
+model.to(device)
 
 # -------------------------------
 # 🔹 Fonction de prédiction
