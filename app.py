@@ -15,17 +15,21 @@ from io import BytesIO
 # # -------------------------------
 # # 🔐 Sécurité : mot de passe
 # # -------------------------------
-PASSWORD = os.environ.get("PASSWORD", "naema2025")
+PASSWORD = "naema2025"  # <<< change comme tu veux
+
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
 if not st.session_state.authenticated:
-    pwd = st.text_input("Mot de passe :", type="password")
-    if pwd == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("✅ Authentification réussie !")
-    else:
-        st.stop()
+    password = st.text_input("Mot de passe", type="password")
+    if st.button("Se connecter"):
+        if password == PASSWORD:
+            st.session_state.authenticated = True
+            st.success("Connexion réussie ✅")
+            st.rerun()
+        else:
+            st.error("Mot de passe incorrect ❌")
+    st.stop()  # stoppe ici si pas encore connecté
 
 # -------------------------------
 # 📂 Paramètres de téléchargement
@@ -147,7 +151,7 @@ def predict_class(intitule):
 # 🖥️ Interface Streamlit
 # -------------------------------
 st.title("📊 Classification NAEMA")
-st.write("Entrez une activité économique ou téléchargez un fichier Excel pour obtenir les classes NAEMA.")
+st.write("Entrez une activité économique (En lettres capitales) ou importez un fichier Excel pour obtenir les classes NAEMA.")
 
 # ---- Prédiction simple texte ----
 activite = st.text_area("Activité :", placeholder="Ex: Culture de maïs, Commerce de détail...")
