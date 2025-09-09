@@ -15,17 +15,17 @@ from io import BytesIO
 # # -------------------------------
 # # 🔐 Sécurité : mot de passe
 # # -------------------------------
-# PASSWORD = os.environ.get("PASSWORD", "naema2025")
-# if "authenticated" not in st.session_state:
-#     st.session_state.authenticated = False
+PASSWORD = os.environ.get("PASSWORD", "naema2025")
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
 
-# if not st.session_state.authenticated:
-#     pwd = st.text_input("Mot de passe :", type="password")
-#     if pwd == PASSWORD:
-#         st.session_state.authenticated = True
-#         st.success("✅ Authentification réussie !")
-#     else:
-#         st.stop()
+if not st.session_state.authenticated:
+    pwd = st.text_input("Mot de passe :", type="password")
+    if pwd == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("✅ Authentification réussie !")
+    else:
+        st.stop()
 
 # -------------------------------
 # 📂 Paramètres de téléchargement
@@ -69,37 +69,38 @@ def download_files():
     os.makedirs(MODEL_DIR, exist_ok=True)
 
     if not os.path.exists(MODEL_SUBDIR):
-        st.info("📥 Téléchargement du modèle depuis Google Drive...")
+        st.info("📥 Téléchargement du modèle ...")
         tar_path = download_tar_from_drive(MODEL_DRIVE_ID)
         extracted_dir = extract_tar_to_temp(tar_path)
         copy_to_local_folder(extracted_dir, MODEL_SUBDIR)
-        st.success("✅ Modèle extrait et copié dans le dossier local.")
+        #st.success("✅ Modèle extrait et copié dans le dossier local.")
 
     if not os.path.exists(ENCODER_PATH):
-        st.info("📥 Téléchargement de l'encodeur...")
+        #st.info("📥 Téléchargement de l'encodeur...")
         download_file_direct(ENCODER_DRIVE_ID, ENCODER_PATH)
-        st.success("✅ Encodeur téléchargé.")
+        #st.success("✅ Encodeur téléchargé.")
 
 download_files()
-def get_arborescence(dossier, indent=0):
-    arbo = ""
-    try:
-        for item in os.listdir(dossier):
-            chemin = os.path.join(dossier, item)
-            arbo += "  " * indent + "├─ " + item + "\n"
-            if os.path.isdir(chemin):
-                arbo += get_arborescence(chemin, indent + 1)
-    except Exception as e:
-        arbo += f"Erreur : {e}\n"
-    return arbo
+
+# def get_arborescence(dossier, indent=0):
+#     arbo = ""
+#     try:
+#         for item in os.listdir(dossier):
+#             chemin = os.path.join(dossier, item)
+#             arbo += "  " * indent + "├─ " + item + "\n"
+#             if os.path.isdir(chemin):
+#                 arbo += get_arborescence(chemin, indent + 1)
+#     except Exception as e:
+#         arbo += f"Erreur : {e}\n"
+#     return arbo
 
 
 
 
 
-# Affichage dans Streamlit
-st.subheader("📁 Arborescence du dossier modèle")
-st.text(get_arborescence(MODEL_SUBDIR))
+# # Affichage dans Streamlit
+# st.subheader("📁 Arborescence du dossier modèle")
+# st.text(get_arborescence(MODEL_SUBDIR))
 
 # -------------------------------
 # 🔄 Chargement du modèle
@@ -108,7 +109,7 @@ st.text(get_arborescence(MODEL_SUBDIR))
 
 try:
     tokenizer = CamembertTokenizer.from_pretrained(os.path.join(MODEL_SUBDIR, "results"))
-    print("✅ Tokenizer chargé avec succès.")
+    #print("✅ Tokenizer chargé avec succès.")
 except Exception as e:
     print("❌ Erreur lors du chargement du tokenizer :", e)
 model = CamembertForSequenceClassification.from_pretrained(
@@ -117,7 +118,7 @@ model = CamembertForSequenceClassification.from_pretrained(
 )
 
 label_encoder = joblib.load(ENCODER_PATH)
-print("✅ encoder chargé avec succès.")
+#print("✅ encoder chargé avec succès.")
 
 # device = torch.device("cpu")
 # model.to(device)
